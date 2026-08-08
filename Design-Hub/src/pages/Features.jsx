@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/Features.css";
@@ -9,24 +9,34 @@ import { db } from "../firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 function Features() {
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const featureParam = searchParams.get("feature");
 
-  // Initialize selected feature dynamically if passed from Dashboard navigation
-  const [selectedFeature, setSelectedFeature] = useState(
-    location.state?.defaultFeature || null
-  );
+  const [selectedFeature, setSelectedFeature] = useState(featureParam || "collaboration");
   
-  // State for Team Collaboration (Email Invites)
   const [teamEmail, setTeamEmail] = useState("");
   const [teamList, setTeamList] = useState([
     { id: 1, email: "colleague@designhub.com", role: "Editor", status: "Active" }
   ]);
 
-  // Dynamic State for Uploaded Designs (Fetched from Database)
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loadingDesigns, setLoadingDesigns] = useState(true);
 
-  // Hook to Fetch Designs from Firestore
+  // Ref for auto-scrolling to the collaboration panel
+  const collaborationRef = useRef(null);
+
+  useEffect(() => {
+    if (featureParam) {
+      setSelectedFeature(featureParam);
+      // Automatically scroll down to the panel when featureParam changes
+      if (featureParam === "collaboration" && collaborationRef.current) {
+        setTimeout(() => {
+          collaborationRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 100);
+      }
+    }
+  }, [featureParam]);
+
   useEffect(() => {
     const fetchDesignsFromFirebase = async () => {
       try {
@@ -40,7 +50,6 @@ function Features() {
         if (firebaseDesigns.length > 0) {
           setUploadedFiles(firebaseDesigns);
         } else {
-          // Fallback Default Static Data if no records exist in Firestore
           setUploadedFiles([
             {
               id: 1,
@@ -59,14 +68,6 @@ function Features() {
     fetchDesignsFromFirebase();
   }, []);
 
-  // Sync state if navigation location state updates
-  useEffect(() => {
-    if (location.state?.defaultFeature) {
-      setSelectedFeature(location.state.defaultFeature);
-    }
-  }, [location.state]);
-
-  // Handler for Team Email Invite
   const handleInvite = (e) => {
     e.preventDefault();
     if (!teamEmail.trim()) return;
@@ -80,10 +81,8 @@ function Features() {
 
     setTeamList([...teamList, newMember]);
     setTeamEmail("");
-    alert(`Collaboration invite sent successfully to ${teamEmail}!`);
   };
 
-  // Handler for High-Quality PNG Download
   const handleDownloadHD = (fileUrl, fileName) => {
     const link = document.createElement("a");
     link.href = fileUrl;
@@ -93,7 +92,6 @@ function Features() {
     document.body.removeChild(link);
   };
 
-  // Updated Features List (Secure Authentication removed, Fast Performance included)
   const featuresList = [
     {
       id: "my-designs",
@@ -130,7 +128,6 @@ function Features() {
           Explore all interactive capabilities offered by DesignHub.
         </p>
 
-        {/* Features Cards Grid */}
         <div className="features-grid">
           {featuresList.map((feature) => (
             <div
@@ -147,15 +144,9 @@ function Features() {
               <button
                 className="explore-btn"
                 style={{
-                  marginTop: "12px",
-                  padding: "6px 14px",
-                  borderRadius: "6px",
-                  border: "none",
-                  backgroundColor: "#E1306C",
-                  color: "#fff",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  cursor: "pointer"
+                  marginTop: "12px", padding: "6px 14px", borderRadius: "6px",
+                  border: "none", backgroundColor: "#E1306C", color: "#fff",
+                  fontSize: "12px", fontWeight: "bold", cursor: "pointer"
                 }}
               >
                 {selectedFeature === feature.id ? "Close Detail ▲" : "Explore Feature ↗"}
@@ -164,9 +155,8 @@ function Features() {
           ))}
         </div>
 
-        {/* Interactive Feature Panel: Team Collaboration */}
         {selectedFeature === "collaboration" && (
-          <div style={panelStyle}>
+          <div ref={collaborationRef} style={panelStyle}>
             <h2>👥 Team Collaboration via Email</h2>
             <p style={{ color: "#666", fontSize: "14px" }}>
               Invite team members by email to collaborate on projects.
@@ -188,7 +178,7 @@ function Features() {
               </button>
             </form>
 
-            <h3>Active Collaborators</h3>
+            <h3>Active & Pending Collaborators</h3>
             <ul style={{ listStyle: "none", padding: 0 }}>
               {teamList.map((member) => (
                 <li key={member.id} style={{ padding: "10px", borderBottom: "1px solid #eee", display: "flex", justifyContent: "space-between" }}>
@@ -200,14 +190,12 @@ function Features() {
           </div>
         )}
 
-        {/* Interactive Feature Panel: Export Designs */}
         {selectedFeature === "export" && (
           <div style={panelStyle}>
             <h2>📤 Export Designs (HD PNG Download)</h2>
             <p style={{ color: "#666", fontSize: "14px" }}>
               Download your uploaded files in high-resolution PNG format.
             </p>
-            
             {loadingDesigns ? (
               <p style={{ marginTop: "1rem" }}>Loading designs from Firebase...</p>
             ) : (
@@ -229,7 +217,6 @@ function Features() {
           </div>
         )}
 
-        {/* Interactive Feature Panel: My Designs */}
         {selectedFeature === "my-designs" && (
           <div style={panelStyle}>
             <h2>🎨 My Designs Gallery</h2>
@@ -237,20 +224,20 @@ function Features() {
               Here are all your saved and template designs.
             </p>
             <div style={{ marginTop: "1rem", padding: "15px", backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
-              <p> Showing all {uploadedFiles.length} active designs in your workspace.</p>
-              <a href="/templates" style={{ color: "#E1306C", fontWeight: "bold", textDecoration: "none" }}>Go to Full Gallery View ↗</a>
+              <p>Showing all {uploadedFiles.length} active designs in your workspace.</p>
+              <Link to="/templates" style={{ color: "#E1306C", fontWeight: "bold", textDecoration: "none" }}>
+                Go to Full Gallery View ↗
+              </Link>
             </div>
           </div>
         )}
 
-        {/* Interactive Feature Panel: Fast Performance (Turbo Speed Test) */}
         {selectedFeature === "performance" && (
           <div style={panelStyle}>
             <h2>⚡ Turbo Speed & Performance Booster</h2>
             <p style={{ color: "#666", fontSize: "14px" }}>
               Test your current workspace loading speed and network latency in real-time.
             </p>
-
             <div style={{ marginTop: "1.5rem", textAlign: "center", padding: "20px", background: "#fdf2f8", borderRadius: "10px" }}>
               <div style={{ fontSize: "2rem", fontWeight: "bold", color: "#E1306C", marginBottom: "10px" }}>
                 🚀 0.12 ms
@@ -274,13 +261,9 @@ function Features() {
 }
 
 const panelStyle = {
-  marginTop: "2rem",
-  padding: "24px",
-  backgroundColor: "#fff",
-  borderRadius: "16px",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-  textAlign: "left",
-  borderLeft: "6px solid #E1306C"
+  marginTop: "2rem", padding: "24px", backgroundColor: "#fff",
+  borderRadius: "16px", boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+  textAlign: "left", borderLeft: "6px solid #E1306C"
 };
 
 export default Features;
