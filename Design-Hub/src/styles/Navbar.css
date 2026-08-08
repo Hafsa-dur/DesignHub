@@ -37,3 +37,20 @@
 .nav-links a:hover{
     color:#EC4899;
 }
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px !important; /* Mobile par side padding kam kar di */
+    }
+
+    .nav-links {
+        gap: 15px !important; /* Links ke darmiyan gap kam kiya */
+    }
+
+    .nav-links a {
+        font-size: 15px !important;
+    }
+
+    .logo a {
+        font-size: 24px !important;
+    }
+}

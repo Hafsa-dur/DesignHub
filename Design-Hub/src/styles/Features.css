@@ -44,4 +44,17 @@
 .feature-box p{
     color:#555;
     line-height:1.7;
+}@media (max-width: 768px) {
+    .features-page {
+        padding: 30px 15px; /* Mobile par padding kam ki taaki jagah zyada mile */
+    }
+
+    .features-page h1 {
+        font-size: 32px; /* Heading ka size chhota kiya */
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr !important; /* Mobile par 3 columns ki bajaye sirf 1 column ho jayega */
+        gap: 15px;
+    }
 }

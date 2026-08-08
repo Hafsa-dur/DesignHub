@@ -23,3 +23,18 @@
 .stat-card p{
     color:#555;
 }
+@media (max-width: 768px) {
+    .stats {
+        grid-template-columns: 1fr !important; /* Mobile par sabhi cards ek ke neeche ek (1 column mein) aa jayenge */
+        padding: 40px 20px !important; /* Padding kam kar di taaki jagah barbad na ho */
+        gap: 20px !important;
+    }
+
+    .stat-card {
+        padding: 25px !important;
+    }
+
+    .stat-card h2 {
+        font-size: 32px !important; /* Mobile ke liye numbers ka size thoda chhota kiya */
+    }
+}

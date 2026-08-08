@@ -42,3 +42,17 @@
     color:#555;
     line-height:1.7;
 }
+@media (max-width: 768px) {
+    .features {
+        padding: 40px 20px !important; /* Mobile par padding kam kar di */
+    }
+
+    .features h2 {
+        font-size: 32px !important; /* Heading ka size chhota kiya */
+    }
+
+    .cards {
+        grid-template-columns: 1fr !important; /* Mobile par 2 columns ki bajaye 1 column ho jayega */
+        gap: 20px !important;
+    }
+}

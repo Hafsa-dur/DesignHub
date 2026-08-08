@@ -49,3 +49,30 @@
     width:520px;
     border-radius:20px;
 }
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column !important; /* Text aur image ek ke neeche ek aa jayenge */
+        padding: 40px 20px;
+        min-height: auto;
+        text-align: center;
+    }
+
+    .hero-content {
+        width: 100% !important; /* Width full kar di */
+        margin-bottom: 30px;
+    }
+
+    .hero-content h1 {
+        font-size: 36px; /* Mobile ke liye heading choti ki */
+    }
+
+    .hero-buttons {
+        justify-content: center; /* Buttons center mein aa jayenge */
+    }
+
+    .hero-image img {
+        width: 100% !important; /* Image screen ke andar fit ho jayegi */
+        max-width: 100%;
+        height: auto;
+    }
+}
