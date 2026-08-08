@@ -1,0 +1,70 @@
+.upload-design {
+  background: #ffffff;
+  border: 1px solid #f1d4e2;
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.upload-design h2 {
+  margin: 0 0 8px;
+  color: #b83f73;
+  font-size: 22px;
+}
+
+.upload-design p {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.upload-design form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upload-design input[type="text"],
+.upload-design input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ead1dd;
+  border-radius: 9px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.upload-design input[type="text"]:focus {
+  outline: none;
+  border-color: #d94f8b;
+}
+
+.upload-design button {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 9px;
+  background: #d94f8b;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.upload-design button:hover {
+  background: #c43f78;
+}
+
+.upload-design button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upload-message {
+  margin-top: 15px;
+  color: #b83f73 !important;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .upload-design {
+    padding: 18px;
+  }
+}
